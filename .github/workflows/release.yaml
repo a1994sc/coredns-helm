@@ -49,3 +49,10 @@ jobs:
           helm package charts/coredns
           helm push coredns-*.tgz oci://ghcr.io/coredns/charts
           rm -rf coredns-*.tgz
+
+      - name: Sign artifacts with Cosign
+        env:
+          COSIGN_EXPERIMENTAL: 1
+        working-directory: charts/coredns
+        run: |-
+          cosign sign ghcr.io/coredns/charts/coredns:$(yq .version Chart.yaml) --yes
